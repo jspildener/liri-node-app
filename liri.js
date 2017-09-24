@@ -1,14 +1,29 @@
-var infoKeys = require("./keys.js");
+var dataKeys = require("./keys.js");
 var fs = require("fs");
 
-var twitter = require("twitter");
+var Twitter = require("twitter");
 var Spotify = require('node-spotify-api');
-var request = require("request");
+var Request = require("request");
 
 var userDataRequest = process.argv[2];
 var userInput = process.argv[3];
 for (i = 4; i < process.argv.length; i++) {
     userInput += " " + process.argv[i];
+}
+
+switch (userDataRequest) {
+    case "movie-this":
+        findMovie();
+        break;
+    case "my-tweets":
+        findTweets();
+        break;
+    case "spotify-this-song":
+        findMusic();
+        break;
+    case "do-what-it-says":
+        doWhatItSays();
+        break;
 }
 
 function findMovie() {
@@ -31,9 +46,24 @@ function findMovie() {
     });
 };
 
-switch (userDataRequest) {
-    case "movie-this":
-        findMovie();
-        break;
+function findTweets() {
+    if (userInput === undefined) {
+        userInput = "chrissyteigen"
+    }
+    var client = new Twitter (dataKeys);
+    var params = { screen_name: userInput, count: 20 };
+
+    client.get('statuses/user_timeline', params, function(error, tweets, response) {
+        if (!error) {
+            if (tweets.length > 0);
+            for (i = 0; i < tweets.length; i++) {
+                console.log((i+1) + ": " + tweets[i].text);
+                console.log("----------------------------------------------------");
+            }
+        }
+    });
+};
+
+function findMusic() {
 
 }
