@@ -11,7 +11,7 @@ module.exports = twitterKeys;
 
 var Spotify = require('node-spotify-api');
 
-var spotify = new Spotify({
+var spotifyKeys = {
   id: 'e52171865c864ad381627bd0c2646088',
   secret: 'c33178ab63e244548c3e3a1349ed19e5',
-});
+};
