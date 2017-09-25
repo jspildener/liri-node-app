@@ -11,22 +11,29 @@ for (i = 4; i < process.argv.length; i++) {
     userInput += " " + process.argv[i];
 }
 
-switch (userDataRequest) {
-    case "movie-this":
-        findMovie();
-        break;
-    case "my-tweets":
-        findTweets();
-        break;
-    case "spotify-this-song":
-        findMusic();
-        break;
-    case "do-what-it-says":
-        doWhatItSays();
-        break;
+callAPI(userDataRequest);
+
+function callAPI(action, txtInput) {
+    switch (action) {
+        case "movie-this":
+            findMovie(txtInput);
+            break;
+        case "my-tweets":
+            findTweets(txtInput);
+            break;
+        case "spotify-this-song":
+            findMusic(txtInput);
+            break;
+        case "do-what-it-says":
+            doWhatItSays(txtInput);
+            break;
+    }
 }
 
-function findMovie() {
+function findMovie(txtInput) {
+    if (txtInput !== undefined) {
+        userInput = txtInput;
+    }
     if (userInput === undefined) {
         userInput = "Mr. Nobody"
     }
@@ -34,6 +41,7 @@ function findMovie() {
     request(query, function(error, response, body) {
         if (!error && response.statusCode === 200) {
             var movieDetails = JSON.parse(body);
+            console.log("----------------------------------------------------");
             console.log('Title: ' + movieDetails.Title);
             console.log('Year: ' + movieDetails.Year);
             console.log('IMDB Rating: ' + movieDetails.imdbRating);
@@ -42,13 +50,17 @@ function findMovie() {
             console.log('Plot: ' + movieDetails.Plot);
             console.log('Actors: ' + movieDetails.Actors);
             console.log('Rotten Tomatoes Rating: ' + movieDetails.tomatoRating);
+            console.log("----------------------------------------------------");
         }
     });
 };
 
-function findTweets() {
+function findTweets(txtInput) {
+    if (txtInput !== undefined) {
+        userInput = txtInput;
+    }
     if (userInput === undefined) {
-        userInput = "chrissyteigen"
+        userInput = "chrissyteigen";
     }
     var client = new Twitter(dataKeys);
     var params = { screen_name: userInput, count: 20 };
@@ -57,6 +69,7 @@ function findTweets() {
         if (!error) {
             if (tweets.length > 0);
             for (i = 0; i < tweets.length; i++) {
+                console.log("----------------------------------------------------");
                 console.log((i + 1) + ": " + tweets[i].text);
                 console.log("----------------------------------------------------");
             }
@@ -66,9 +79,12 @@ function findTweets() {
     });
 };
 
-function findMusic() {
+function findMusic(txtInput) {
+    if (txtInput !== undefined) {
+        userInput = txtInput;
+    }
     if (userInput === undefined) {
-        userInput = 'Mr. Brightside'
+        userInput = 'Mr. Brightside';
     }
 
     var spotify = new Spotify({
@@ -76,16 +92,29 @@ function findMusic() {
         secret: 'c33178ab63e244548c3e3a1349ed19e5',
     });
 
-    spotify.search({ type: 'track', query: userInput, limit: 3 }, function(err, data) {
+    spotify.search({ type: 'track', query: userInput, limit: 1 }, function(err, data) {
         if (!err) {
             for (i = 0; i < data.tracks.items.length; i++) {
                 var song = data.tracks.items[i];
+                console.log("----------------------------------------------------");
                 console.log('Title: ' + song.name);
                 console.log('Artist Name: ' + song.artists[0].name);
                 console.log('Album Name: ' + song.album.name);
                 console.log('Preview Link: ' + song.preview_url);
                 console.log("----------------------------------------------------");
             }
+        } else {
+            console.log("Error occured: " + err);
+        }
+    });
+};
+
+function doWhatItSays() {
+    fs.readFile("random.txt", "utf8", function(err, data) {
+        if (!err) {
+            var txt = data.split(",");
+            console.log(txt);
+            callAPI(txt[0], txt[1]);
         } else {
             console.log("Error occured: " + err);
         }
