@@ -51,6 +51,21 @@ function findMovie(txtInput) {
             console.log('Actors: ' + movieDetails.Actors);
             console.log('Rotten Tomatoes Rating: ' + movieDetails.tomatoRating);
             console.log("----------------------------------------------------");
+
+            var timeStamp = new Date().toLocaleString();
+            fs.appendFile("log.txt", timeStamp + ", " + userDataRequest + ", " + userInput + "\n", function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
+        } else {
+            console.log("Error occured" + error);
+            var timeStamp = new Date().toLocaleString();
+            fs.appendFile("error.txt", timeStamp + ", " + userDataRequest + ", " + userInput + "\n", function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
         }
     });
 };
@@ -60,7 +75,7 @@ function findTweets(txtInput) {
         userInput = txtInput;
     }
     if (userInput === undefined) {
-        userInput = "chrissyteigen";
+        userInput = "realDonaldTrump";
     }
     var client = new Twitter(dataKeys);
     var params = { screen_name: userInput, count: 20 };
@@ -70,11 +85,24 @@ function findTweets(txtInput) {
             if (tweets.length > 0);
             for (i = 0; i < tweets.length; i++) {
                 console.log("----------------------------------------------------");
-                console.log((i + 1) + ": " + tweets[i].text);
-                console.log("----------------------------------------------------");
+                console.log((i + 1) + ": " + tweets[i].created_at);
+                console.log(tweets[i].text);
+                console.log("----------------------------------------------------")
             }
+            var timeStamp = new Date().toLocaleString();
+            fs.appendFile("log.txt", timeStamp + ", " + userDataRequest + ", " + userInput + "\n", function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
         } else {
-            console.log("Error occured");
+            console.log("Error occured" + error);
+            var timeStamp = new Date().toLocaleString();
+            fs.appendFile("error.txt", timeStamp + ", " + userDataRequest + ", " + userInput + "\n", function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
         }
     });
 };
@@ -103,8 +131,20 @@ function findMusic(txtInput) {
                 console.log('Preview Link: ' + song.preview_url);
                 console.log("----------------------------------------------------");
             }
+            var timeStamp = new Date().toLocaleString();
+            fs.appendFile("log.txt", timeStamp + ", " + userDataRequest + ", " + userInput + "\n", function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
         } else {
             console.log("Error occured: " + err);
+            var timeStamp = new Date().toLocaleString();
+            fs.appendFile("error.txt", timeStamp + ", " + userDataRequest + ", " + userInput + "\n", function(err) {
+                if (err) {
+                    return console.log(err);
+                }
+            });
         }
     });
 };
@@ -113,7 +153,6 @@ function doWhatItSays() {
     fs.readFile("random.txt", "utf8", function(err, data) {
         if (!err) {
             var txt = data.split(",");
-            console.log(txt);
             callAPI(txt[0], txt[1]);
         } else {
             console.log("Error occured: " + err);
